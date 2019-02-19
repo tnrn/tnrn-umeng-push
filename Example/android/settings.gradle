@@ -1,0 +1,5 @@
+rootProject.name = 'Example'
+include ':tnrn-umeng-push'
+project(':tnrn-umeng-push').projectDir = new File(rootProject.projectDir, '../node_modules/tnrn-umeng-push/android')
+
+include ':app'
