@@ -2,8 +2,14 @@
 [![npm][npm-badge]][npm]
 [![react-native][rn-badge]][rn]
 [![MIT][license-badge]][license]
-[![bitHound Score][bithound-badge]][bithound]
 [![Downloads](https://img.shields.io/npm/dm/tnrn-umeng-push.svg)](https://www.npmjs.com/package/tnrn-umeng-push)
+
+[npm-badge]: https://img.shields.io/npm/v/tnrn-umeng-push.svg
+[npm]: https://www.npmjs.com/package/tnrn-umeng-push
+[rn-badge]: https://img.shields.io/badge/react--native-v0.40-05A5D1.svg
+[rn]: https://facebook.github.io/react-native
+[license-badge]: https://img.shields.io/dub/l/vibe-d.svg
+[license]: https://raw.githubusercontent.com/tnrn/tnrn-umeng-push/master/LICENSE
 
 友盟推送 [React Native][rn].
 
