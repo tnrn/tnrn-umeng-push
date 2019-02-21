@@ -65,7 +65,7 @@ RCT_EXPORT_MODULE()
 
 - (void)didOpenRemoteNotification:(NSDictionary *)noti {
     if (self.openRemoteMessageBlock) {
-        self.openRemoteMessageBlock(noti)
+        self.openRemoteMessageBlock(noti);
     }
     else [self sendEventWithName:DidOpenRemoteMessage body:noti];
 }
@@ -184,13 +184,13 @@ RCT_EXPORT_MODULE()
         // 前台的本地通知
     }
     // app处于前台时提示设置
-    completionHandler(UNNotificationPresentationOptionNone)
+    completionHandler(UNNotificationPresentationOptionNone);
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
-    if ([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+    if ([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         // APP在前台的远程通知
-        NSDictionary *userInfo = notification.request.content.userInfo;
+        NSDictionary *userInfo = response.notification.request.content.userInfo;
         [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
     }
     else {
@@ -296,12 +296,12 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - RN method
 
-RCT_EXPORT_METHOD(didReceiveRemoteNotification:(RCTPromiseResolveBlock)completion) {
-    self.receiveRemoteMessageBlock = completion
+RCT_EXPORT_METHOD(receiveRemoteNotification:(RCTPromiseResolveBlock)completion) {
+    self.receiveRemoteMessageBlock = completion;
 }
 
-RCT_EXPORT_METHOD(didOpenRemoteNotification:(RCTPromiseResolveBlock)completion) {
-    self.openRemoteMessageBlock = completion
+RCT_EXPORT_METHOD(openRemoteNotification:(RCTPromiseResolveBlock)completion) {
+    self.openRemoteMessageBlock = completion;
 }
 
 RCT_EXPORT_METHOD(addTag:(NSString *)tag response:(RCTResponseSenderBlock)completion) {
