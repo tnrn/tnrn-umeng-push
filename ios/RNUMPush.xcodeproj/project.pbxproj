@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C8804BD6221BB6F8004E7F56 /* UMPushModule.m in Sources */ = {isa = PBXBuildFile; fileRef = C8804BD5221BB6F8004E7F56 /* UMPushModule.m */; };
-		C8804C14221BD347004E7F56 /* UMPush.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8804C13221BD347004E7F56 /* UMPush.framework */; };
+		C88A6459221E52C300D7FEBC /* UMPush.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C88A6456221E52C300D7FEBC /* UMPush.framework */; };
+		C88A645A221E52C300D7FEBC /* UMCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C88A6457221E52C300D7FEBC /* UMCommon.framework */; };
+		C88A645B221E52C300D7FEBC /* RNUmengPush.m in Sources */ = {isa = PBXBuildFile; fileRef = C88A6458221E52C300D7FEBC /* RNUmengPush.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,9 +26,10 @@
 
 /* Begin PBXFileReference section */
 		C8804BC4221BB62C004E7F56 /* libRNUMPush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNUMPush.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		C8804BD4221BB6F8004E7F56 /* UMPushModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMPushModule.h; sourceTree = "<group>"; };
-		C8804BD5221BB6F8004E7F56 /* UMPushModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UMPushModule.m; sourceTree = "<group>"; };
-		C8804C13221BD347004E7F56 /* UMPush.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UMPush.framework; sourceTree = "<group>"; };
+		C88A6455221E52C300D7FEBC /* RNUmengPush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNUmengPush.h; sourceTree = "<group>"; };
+		C88A6456221E52C300D7FEBC /* UMPush.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UMPush.framework; sourceTree = "<group>"; };
+		C88A6457221E52C300D7FEBC /* UMCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UMCommon.framework; sourceTree = "<group>"; };
+		C88A6458221E52C300D7FEBC /* RNUmengPush.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNUmengPush.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,7 +37,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8804C14221BD347004E7F56 /* UMPush.framework in Frameworks */,
+				C88A6459221E52C300D7FEBC /* UMPush.framework in Frameworks */,
+				C88A645A221E52C300D7FEBC /* UMCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,7 +48,7 @@
 		C8804BBB221BB62C004E7F56 = {
 			isa = PBXGroup;
 			children = (
-				C8804BD0221BB6B9004E7F56 /* RNUMPush */,
+				C88A6454221E52C300D7FEBC /* RNUMPush */,
 				C8804BC5221BB62C004E7F56 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,12 +61,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C8804BD0221BB6B9004E7F56 /* RNUMPush */ = {
+		C88A6454221E52C300D7FEBC /* RNUMPush */ = {
 			isa = PBXGroup;
 			children = (
-				C8804C13221BD347004E7F56 /* UMPush.framework */,
-				C8804BD4221BB6F8004E7F56 /* UMPushModule.h */,
-				C8804BD5221BB6F8004E7F56 /* UMPushModule.m */,
+				C88A6455221E52C300D7FEBC /* RNUmengPush.h */,
+				C88A6458221E52C300D7FEBC /* RNUmengPush.m */,
+				C88A6456221E52C300D7FEBC /* UMPush.framework */,
+				C88A6457221E52C300D7FEBC /* UMCommon.framework */,
 			);
 			path = RNUMPush;
 			sourceTree = "<group>";
@@ -124,7 +128,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8804BD6221BB6F8004E7F56 /* UMPushModule.m in Sources */,
+				C88A645B221E52C300D7FEBC /* RNUmengPush.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
