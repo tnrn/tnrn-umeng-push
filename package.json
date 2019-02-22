@@ -1,7 +1,7 @@
 {
   "name": "tnrn-umeng-push",
   "description": "umeng push for react-native",
-  "main": "lib/index.js",
+  "main": "index.js",
   "author": "winter <winterw201501@gmail.com>",
   "version": "0.1.0",
   "scripts": {

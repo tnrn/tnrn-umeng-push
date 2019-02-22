@@ -6,14 +6,17 @@
  */
 
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import "RNUmengPush.h"
+
+#define UmengAppKey @"5c6a6eabf1f5564ef9000d8f"
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [RNUmengPush registerWithAppkey:UmengAppKey launchOptions:launchOptions];
+  
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
@@ -23,13 +26,24 @@
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
   rootView.backgroundColor = [UIColor whiteColor];
-
+  
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
+}
+
+#pragma mark - push
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  [RNUmengPush didRegisterDeviceToken:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+//  [RNUmengPush application:application didReceiveRemoteNotification:userInfo];
+  completionHandler(UIBackgroundFetchResultNewData);
 }
 
 @end

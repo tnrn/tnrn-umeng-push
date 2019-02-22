@@ -7,9 +7,8 @@
 //
 
 #import "RNUmengPush.h"
-#import <UMPush/UMessage.h>
-#import <UMCommon/UMCommon.h>
-#import <UserNotifications/UserNotifications.h>
+//#import <UMPush/UMessage.h>
+//#import <UMCommon/UMCommon.h>
 
 #define UMSYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
@@ -49,12 +48,11 @@ RCT_EXPORT_MODULE()
     return [RNUmengPush sharedMethodQueue];
 }
 
-- (NSDictionary<NSString *, id> *)constantsToExport {
-    return @{
-             DidReceiveRemoteMessage: DidReceiveRemoteMessage,
-             DidOpenRemoteMessage: DidOpenRemoteMessage,
-             };
+- (NSArray<NSString *> *)supportedEvents {
+    return @[DidReceiveRemoteMessage, DidOpenRemoteMessage];
 }
+
+#pragma mark - private method
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)noti {
     if (self.receiveRemoteMessageBlock) {
@@ -71,9 +69,9 @@ RCT_EXPORT_MODULE()
 }
 
 + (void)setupPushWithLaunchOptions:(NSDictionary *)launchOptions {
-    UMessageRegisterEntity *entity = [[UMessageRegisterEntity alloc] init];
-    // 声音，弹窗，角标
-    entity.types = UMessageAuthorizationOptionBadge|UMessageAuthorizationOptionSound|UMessageAuthorizationOptionAlert;
+//    UMessageRegisterEntity *entity = [[UMessageRegisterEntity alloc] init];
+//    // 声音，弹窗，角标
+//    entity.types = UMessageAuthorizationOptionBadge|UMessageAuthorizationOptionSound|UMessageAuthorizationOptionAlert;
     
     // iOS10以后
     if (UMSYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10")) {
@@ -87,7 +85,7 @@ RCT_EXPORT_MODULE()
                                                                                             actions:@[action1, action2]
                                                                                   intentIdentifiers:@[]
                                                                                             options:UNNotificationCategoryOptionCustomDismissAction];
-        entity.categories = [NSSet setWithObjects:notiCategory_ios10, nil];
+//        entity.categories = [NSSet setWithObjects:notiCategory_ios10, nil];
     }
     else {
         UIMutableUserNotificationAction *action1 = [[UIMutableUserNotificationAction alloc] init];
@@ -106,19 +104,19 @@ RCT_EXPORT_MODULE()
         notiCategory_ios8.identifier = @"notiCategory_ios8";
         [notiCategory_ios8 setActions:@[action1, action2] forContext:(UIUserNotificationActionContextDefault)];
         
-        entity.categories = [NSSet setWithObjects:notiCategory_ios8, nil];
+//        entity.categories = [NSSet setWithObjects:notiCategory_ios8, nil];
     }
     
-    [UMessage registerForRemoteNotificationsWithLaunchOptions:launchOptions Entity:entity completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        // iOS10以后 回调
-        if (!granted) {
-            // 拒绝通知
-        }
-    }];
+//    [UMessage registerForRemoteNotificationsWithLaunchOptions:launchOptions Entity:entity completionHandler:^(BOOL granted, NSError * _Nullable error) {
+//        // iOS10以后 回调
+//        if (!granted) {
+//            // 拒绝通知
+//        }
+//    }];
     
     // 设置APP运行时，收到通知不弹窗
-    [UMessage setAutoAlert:NO];
-    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+//    [UMessage setAutoAlert:NO];
+//    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
     
     // 由推送第一次打开app
     if (launchOptions[@"UIApplicationLaunchOptionsRemoteNotificationKey"]) {
@@ -126,50 +124,50 @@ RCT_EXPORT_MODULE()
     }
 }
 
-#pragma mark - launchOptions
-
-+ (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions {
-    [UMConfigure initWithAppkey:appkey channel:nil];
-    [self setupPushWithLaunchOptions:launchOptions];
-    
-#ifdef DEBUG
-    [UMConfigure setLogEnabled:YES];
-#endif
++ (void)didReceiveRemoteNotificationWhenFirstLaunchApp:(NSDictionary *)noti {
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), [self sharedMethodQueue], ^{
+//        // 当前模块是否正在加载
+//        if ([RNUmengPush sharedInstance].bridge.isLoading) {
+//            [UMessage didReceiveRemoteNotification:noti];
+//            [[RNUmengPush sharedInstance] didOpenRemoteNotification:noti];
+//        }
+//        else {
+//            [self didReceiveRemoteNotificationWhenFirstLaunchApp:noti];
+//        }
+//    });
 }
 
-+ (void)application:(UIApplication *)application didRegisterDeviceToken:(NSData *)deviceToken {
+#pragma mark - pulic method
+
++ (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions {
+//    [UMConfigure initWithAppkey:appkey channel:nil];
+//    [self setupPushWithLaunchOptions:launchOptions];
+//
+//#ifdef DEBUG
+//    [UMConfigure setLogEnabled:YES];
+//#endif
+}
+
++ (void)didRegisterDeviceToken:(NSData *)deviceToken {
     NSString *tokenString = [deviceToken description];
     tokenString = [tokenString stringByReplacingOccurrencesOfString:@"<" withString:@""];
     tokenString = [tokenString stringByReplacingOccurrencesOfString:@">" withString:@""];
     tokenString = [tokenString stringByReplacingOccurrencesOfString:@" " withString:@""];
     [RNUmengPush sharedInstance].deviceToken = tokenString;
     
-    [UMessage registerDeviceToken:deviceToken];
+//    [UMessage registerDeviceToken:deviceToken];
 }
 
-+ (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [UMessage didReceiveRemoteNotification:userInfo];
-    
-    // send event
-    if (application.applicationState == UIApplicationStateInactive) {
-        [[RNUmengPush sharedInstance] didOpenRemoteNotification:userInfo];
-    }
-    else {
-        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
-    }
-}
-
-+ (void)didReceiveRemoteNotificationWhenFirstLaunchApp:(NSDictionary *)noti {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), [self sharedMethodQueue], ^{
-       // 当前模块是否正在加载
-        if ([RNUmengPush sharedInstance].bridge.isLoading) {
-            [UMessage didReceiveRemoteNotification:noti];
-            [[RNUmengPush sharedInstance] didOpenRemoteNotification:noti];
-        }
-        else {
-            [self didReceiveRemoteNotificationWhenFirstLaunchApp:noti];
-        }
-    });
++ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo applicationState:(UIApplicationState )state  {
+//    [UMessage didReceiveRemoteNotification:userInfo];
+//
+//    // send event
+//    if (state == UIApplicationStateInactive) {
+//        [[RNUmengPush sharedInstance] didOpenRemoteNotification:userInfo];
+//    }
+//    else {
+//        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
+//    }
 }
 
 #pragma mark - UNUserNotificationCenterDelegate >=iOS10.0
@@ -177,8 +175,8 @@ RCT_EXPORT_MODULE()
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
     if ([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         // APP在前台的远程通知
-        NSDictionary *userInfo = notification.request.content.userInfo;
-        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
+//        NSDictionary *userInfo = notification.request.content.userInfo;
+//        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
     }
     else {
         // 前台的本地通知
@@ -190,8 +188,8 @@ RCT_EXPORT_MODULE()
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
     if ([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         // APP在前台的远程通知
-        NSDictionary *userInfo = response.notification.request.content.userInfo;
-        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
+//        NSDictionary *userInfo = response.notification.request.content.userInfo;
+//        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
     }
     else {
         // 前台的本地通知
@@ -296,48 +294,49 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - RN method
 
-RCT_EXPORT_METHOD(receiveRemoteNotification:(RCTPromiseResolveBlock)completion) {
-    self.receiveRemoteMessageBlock = completion;
-}
-
-RCT_EXPORT_METHOD(openRemoteNotification:(RCTPromiseResolveBlock)completion) {
-    self.openRemoteMessageBlock = completion;
-}
-
-RCT_EXPORT_METHOD(addTag:(NSString *)tag response:(RCTResponseSenderBlock)completion) {
-    [UMessage addTags:tag response:^(id responseObject, NSInteger remain, NSError *error) {
-        [self handleResponse:responseObject remain:remain error:error completion:completion];
-    }];
-}
-
-RCT_EXPORT_METHOD(deleteTag:(NSString *)tag response:(RCTResponseSenderBlock)completion) {
-    [UMessage deleteTags:tag response:^(id responseObject, NSInteger remain, NSError *error) {
-        [self handleResponse:responseObject remain:remain error:error completion:completion];
-    }];
-}
-
-RCT_EXPORT_METHOD(listTag:(RCTResponseSenderBlock)completion) {
-    [UMessage getTags:^(NSSet *responseTags, NSInteger remain, NSError *error) {
-        [self handleGetTagResponse:responseTags remain:remain error:error completion:completion];
-    }];
-}
-
-RCT_EXPORT_METHOD(addAlias:(NSString *)name type:(NSString *)type response:(RCTResponseSenderBlock)completion) {
-    [UMessage addAlias:name type:type response:^(id responseObject, NSError *error) {
-        [self handleAliasResponse:responseObject error:error completion:completion];
-    }];
-}
-
-RCT_EXPORT_METHOD(addExclusiveAlias:(NSString *)name type:(NSString *)type response:(RCTResponseSenderBlock)completion) {
-    [UMessage setAlias:name type:type response:^(id responseObject, NSError *error) {
-        [self handleAliasResponse:responseObject error:error completion:completion];
-    }];
-}
-
-RCT_EXPORT_METHOD(deleteAlias:(NSString *)name type:(NSString *)type response:(RCTResponseSenderBlock)completion) {
-    [UMessage removeAlias:name type:type response:^(id responseObject, NSError *error) {
-        [self handleAliasResponse:responseObject error:error completion:completion];
-    }];
-}
+//RCT_EXPORT_METHOD(receiveRemoteNotification:(RCTPromiseResolveBlock)completion) {
+//    self.receiveRemoteMessageBlock = completion;
+//}
+//
+//RCT_EXPORT_METHOD(openRemoteNotification:(RCTPromiseResolveBlock)completion) {
+//    self.openRemoteMessageBlock = completion;
+//}
+//
+//RCT_EXPORT_METHOD(addTag:(NSString *)tag response:(RCTResponseSenderBlock)completion) {
+//    [UMessage addTags:tag response:^(id responseObject, NSInteger remain, NSError *error) {
+//        [self handleResponse:responseObject remain:remain error:error completion:completion];
+//    }];
+//}
+//
+//RCT_EXPORT_METHOD(deleteTag:(NSString *)tag response:(RCTResponseSenderBlock)completion) {
+//    [UMessage deleteTags:tag response:^(id responseObject, NSInteger remain, NSError *error) {
+//        [self handleResponse:responseObject remain:remain error:error completion:completion];
+//    }];
+//}
+//
+//RCT_EXPORT_METHOD(listTag:(RCTResponseSenderBlock)completion) {
+//    [UMessage getTags:^(NSSet *responseTags, NSInteger remain, NSError *error) {
+//        [self handleGetTagResponse:responseTags remain:remain error:error completion:completion];
+//    }];
+//}
+//
+//RCT_EXPORT_METHOD(addAlias:(NSString *)name type:(NSString *)type response:(RCTResponseSenderBlock)completion) {
+//    [UMessage addAlias:name type:type response:^(id responseObject, NSError *error) {
+//        [self handleAliasResponse:responseObject error:error completion:completion];
+//    }];
+//}
+//
+//RCT_EXPORT_METHOD(addExclusiveAlias:(NSString *)name type:(NSString *)type response:(RCTResponseSenderBlock)completion) {
+//    [UMessage setAlias:name type:type response:^(id responseObject, NSError *error) {
+//        [self handleAliasResponse:responseObject error:error completion:completion];
+//    }];
+//}
+//
+//RCT_EXPORT_METHOD(deleteAlias:(NSString *)name type:(NSString *)type response:(RCTResponseSenderBlock)completion) {
+//    [UMessage removeAlias:name type:type response:^(id responseObject, NSError *error) {
+//        [self handleAliasResponse:responseObject error:error completion:completion];
+//    }];
+//}
 
 @end
+
