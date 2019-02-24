@@ -28,10 +28,13 @@ First, `cd` to your RN project directory, and install RNMK through [rnpm](https:
 
   `$react-native link tnrn-umeng-push`
 
-#### Manually
-1. Add `node_modules/tnrn-umeng-push/ios/RNUMPush.xcodeproj` to your xcode project, usually under the `Libraries` group
-1. Add `libRNUMPush.a` (from `Products` under `RNUMPush.xcodeproj`) to build target's `Linked Frameworks and Libraries` list
-1. Add ocr framework to `$(PROJECT_DIR)/Frameworks.`
+在工程target的 `Build Phases->Link Binary with Libraries` 中加入
+`libz.tbd libsqlite3.tbd`
+
+在 `Build Settings->Search Paths->Framework Search Paths` 中加入路径 `$(SRCROOT)/../node_modules/tnrn-umeng-push/ios/Framework`
+
+在 `Build Settings->Link->Other Linker Flags` 中加入 `-framework "UMPush"` 和 `-framework "UMCommon"`
+
 
 ### Android
 

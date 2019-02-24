@@ -27,6 +27,6 @@
  */
 + (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions;
 + (void)didRegisterDeviceToken:(NSData *)deviceToken;
-//+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo applicationState:(UIApplicationState)state;
++ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo applicationState:(UIApplicationState)state;
 @end
 

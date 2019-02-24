@@ -7,9 +7,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "tnrn-umeng-push": "../",
     "react": "16.6.3",
-    "react-native": "0.58.4",
-    "tnrn-umeng-push": "../"
+    "react-native": "0.58.4"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",

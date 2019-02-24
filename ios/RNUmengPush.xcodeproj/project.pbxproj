@@ -10,6 +10,7 @@
 		C83CD730221FDA900012BEDC /* UMPush.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C83CD72E221FDA900012BEDC /* UMPush.framework */; };
 		C83CD731221FDA900012BEDC /* UMCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C83CD72F221FDA900012BEDC /* UMCommon.framework */; };
 		C83CD735221FDACB0012BEDC /* RNUmengPush.m in Sources */ = {isa = PBXBuildFile; fileRef = C83CD734221FDACB0012BEDC /* RNUmengPush.m */; };
+		C8A6CA0D222287E700F639FA /* RNUmengPush.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = C83CD733221FDACB0012BEDC /* RNUmengPush.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -19,6 +20,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				C8A6CA0D222287E700F639FA /* RNUmengPush.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

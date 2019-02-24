@@ -28,8 +28,8 @@
 		C88A64F1221E7F3200D7FEBC /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C88A64F0221E7F3200D7FEBC /* libz.tbd */; };
 		C88A64F3221E7F4000D7FEBC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C88A64F2221E7F4000D7FEBC /* libsqlite3.tbd */; };
 		C88A64F5221E7F5200D7FEBC /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C88A64F4221E7F5200D7FEBC /* CoreTelephony.framework */; };
+		DF4BAF3F94D14F9CAE9750EE /* libRNUmengPush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDAB001A6C5B4DBDA7B88C31 /* libRNUmengPush.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
-		EF25313EA3A544E99DE62B31 /* libRNUmengPush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37D41B0395D64FDDAEC45F05 /* libRNUmengPush.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -264,9 +264,9 @@
 			remoteGlobalIDString = 358F4ED71D1E81A9004DF814;
 			remoteInfo = RCTBlob;
 		};
-		C83CD76C221FDBDF0012BEDC /* PBXContainerItemProxy */ = {
+		C83CD83E221FFB580012BEDC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5B2D2578D1774F58BBFE9B8C /* RNUmengPush.xcodeproj */;
+			containerPortal = 77256BCE03FB4186B37439D2 /* RNUmengPush.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNUmengPush;
@@ -319,9 +319,8 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Example/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		37D41B0395D64FDDAEC45F05 /* libRNUmengPush.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNUmengPush.a; sourceTree = "<group>"; };
-		5B2D2578D1774F58BBFE9B8C /* RNUmengPush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNUmengPush.xcodeproj; path = "../node_modules/tnrn-umeng-push/ios/RNUmengPush.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		77256BCE03FB4186B37439D2 /* RNUmengPush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNUmengPush.xcodeproj; path = "../node_modules/tnrn-umeng-push/ios/RNUmengPush.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -331,6 +330,7 @@
 		C88A64F0221E7F3200D7FEBC /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		C88A64F2221E7F4000D7FEBC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		C88A64F4221E7F5200D7FEBC /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		CDAB001A6C5B4DBDA7B88C31 /* libRNUmengPush.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNUmengPush.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -357,7 +357,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				EF25313EA3A544E99DE62B31 /* libRNUmengPush.a in Frameworks */,
+				DF4BAF3F94D14F9CAE9750EE /* libRNUmengPush.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,7 +511,7 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
-				5B2D2578D1774F58BBFE9B8C /* RNUmengPush.xcodeproj */,
+				77256BCE03FB4186B37439D2 /* RNUmengPush.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -556,10 +556,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C83CD769221FDBDF0012BEDC /* Products */ = {
+		C83CD83B221FFB570012BEDC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C83CD76D221FDBDF0012BEDC /* libRNUmengPush.a */,
+				C83CD83F221FFB580012BEDC /* libRNUmengPush.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -567,7 +567,7 @@
 		C8804C57221BE3F9004E7F56 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				37D41B0395D64FDDAEC45F05 /* libRNUmengPush.a */,
+				CDAB001A6C5B4DBDA7B88C31 /* libRNUmengPush.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -676,8 +676,8 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
-					ProductGroup = C83CD769221FDBDF0012BEDC /* Products */;
-					ProjectRef = 5B2D2578D1774F58BBFE9B8C /* RNUmengPush.xcodeproj */;
+					ProductGroup = C83CD83B221FFB570012BEDC /* Products */;
+					ProjectRef = 77256BCE03FB4186B37439D2 /* RNUmengPush.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -919,11 +919,11 @@
 			remoteRef = ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C83CD76D221FDBDF0012BEDC /* libRNUmengPush.a */ = {
+		C83CD83F221FFB580012BEDC /* libRNUmengPush.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNUmengPush.a;
-			remoteRef = C83CD76C221FDBDF0012BEDC /* PBXContainerItemProxy */;
+			remoteRef = C83CD83E221FFB580012BEDC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		C8804C0C221BB8D1004E7F56 /* libjsi.a */ = {
@@ -1018,7 +1018,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = QDK726TLCA;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/tnrn-umeng-push/ios/Framework",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/tnrn-umeng-push/ios/**",
@@ -1036,6 +1039,10 @@
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
+					"-framework",
+					"\"UMPush\"",
+					"-framework",
+					"\"UMCommon\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rongxin.wellLoan;
 				PRODUCT_NAME = Example;
@@ -1051,7 +1058,10 @@
 				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QDK726TLCA;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/tnrn-umeng-push/ios/Framework",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/tnrn-umeng-push/ios/**",
@@ -1069,6 +1079,10 @@
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
+					"-framework",
+					"\"UMPush\"",
+					"-framework",
+					"\"UMCommon\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rongxin.wellLoan;
 				PRODUCT_NAME = Example;
