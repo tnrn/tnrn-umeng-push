@@ -20,7 +20,10 @@ const instructions = Platform.select({
 
 export default class App extends Component {
 
-  componentDidMount() {
+  addTag = () => {
+    UMPush.addTag('test', (result) => {
+      console.log('******************** = ', result)
+    })
   }
 
   render() {
@@ -31,7 +34,7 @@ export default class App extends Component {
         <Text style={styles.instructions}>{instructions}</Text>
         <Button
           title='UMPush Action'
-          onPress={()=>{UMPush.init()}}
+          onPress={this.addTag}
         />
       </View>
     );

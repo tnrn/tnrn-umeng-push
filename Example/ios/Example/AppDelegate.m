@@ -8,7 +8,7 @@
 #import "AppDelegate.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-#import "RNUmengPush.h"
+#import <RNUmengPush/RNUmengPush.h>
 
 #define UmengAppKey @"5c6a6eabf1f5564ef9000d8f"
 
@@ -42,7 +42,7 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-//  [RNUmengPush application:application didReceiveRemoteNotification:userInfo];
+  [RNUmengPush didReceiveRemoteNotification:userInfo applicationState:application.applicationState];
   completionHandler(UIBackgroundFetchResultNewData);
 }
 
