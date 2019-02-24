@@ -17,8 +17,8 @@ static NSString * const DidOpenRemoteMessage = @"RNUmengPushDidOpenRemoteMessage
 
 @interface RNUmengPush ()<UNUserNotificationCenterDelegate>
 @property (nonatomic, copy) NSString *deviceToken;
-@property (nonatomic, copy) RCTPromiseResolveBlock receiveRemoteMessageBlock;
-@property (nonatomic, copy) RCTPromiseResolveBlock openRemoteMessageBlock;
+@property (nonatomic, copy) RCTResponseSenderBlock receiveRemoteMessageBlock;
+@property (nonatomic, copy) RCTResponseSenderBlock openRemoteMessageBlock;
 @end
 
 @implementation RNUmengPush
@@ -56,14 +56,14 @@ RCT_EXPORT_MODULE()
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)noti {
     if (self.receiveRemoteMessageBlock) {
-        self.receiveRemoteMessageBlock(noti);
+        self.receiveRemoteMessageBlock(@[noti]);
     }
     else [self sendEventWithName:DidReceiveRemoteMessage body:noti];
 }
 
 - (void)didOpenRemoteNotification:(NSDictionary *)noti {
     if (self.openRemoteMessageBlock) {
-        self.openRemoteMessageBlock(noti);
+        self.openRemoteMessageBlock(@[noti]);
     }
     else [self sendEventWithName:DidOpenRemoteMessage body:noti];
 }
@@ -72,12 +72,12 @@ RCT_EXPORT_MODULE()
     UMessageRegisterEntity *entity = [[UMessageRegisterEntity alloc] init];
     // 声音，弹窗，角标
     entity.types = UMessageAuthorizationOptionBadge|UMessageAuthorizationOptionSound|UMessageAuthorizationOptionAlert;
-
+    
     // iOS10以后
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10")) {
         UNNotificationAction *action1 = [UNNotificationAction actionWithIdentifier:@"action1_ios10_identifier" title:@"打开" options:UNNotificationActionOptionForeground];
         UNNotificationAction *action2 = [UNNotificationAction actionWithIdentifier:@"action2_ios10_identifier" title:@"忽略" options:UNNotificationActionOptionForeground];
-
+        
         //UNNotificationCategoryOptionNone
         //UNNotificationCategoryOptionCustomDismissAction  清除通知被触发会走通知的代理方法
         //UNNotificationCategoryOptionAllowInCarPlay       适用于行车模式
@@ -92,21 +92,21 @@ RCT_EXPORT_MODULE()
         action1.identifier = @"action1_ios8_identifier";
         action1.title = @"打开";
         action1.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
-
+        
         UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];  //第二按钮
         action2.identifier = @"action2_ios8_identifier";
         action2.title = @"忽略";
         action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
         action2.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
         action2.destructive = YES;
-
+        
         UIMutableUserNotificationCategory *notiCategory_ios8 = [[UIMutableUserNotificationCategory alloc] init];
         notiCategory_ios8.identifier = @"notiCategory_ios8";
         [notiCategory_ios8 setActions:@[action1, action2] forContext:(UIUserNotificationActionContextDefault)];
-
+        
         entity.categories = [NSSet setWithObjects:notiCategory_ios8, nil];
     }
-
+    
     [UMessage registerForRemoteNotificationsWithLaunchOptions:launchOptions Entity:entity completionHandler:^(BOOL granted, NSError * _Nullable error) {
         // iOS10以后 回调
         if (!granted) {
@@ -228,17 +228,17 @@ RCT_EXPORT_MODULE()
             if (msg.length == 0) {
                 msg = error.localizedDescription;
             }
-            completion(@[@(error.code), @(remain)]);
+            completion(@[@{@"code": @(error.code), @"msg": msg}]);
         }
         else {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *retDict = responseObject;
                 if ([retDict[@"success"] isEqualToString:@"ok"]) {
-                    completion(@[@200, @(remain)]);
+                    completion(@[@{@"code": @(200), @"remain": @(remain)}]);
                 }
-                else completion(@[@(-1), @(remain)]);
+                else completion(@[@{@"code": @(-1), @"remain": @(remain)}]);
             }
-            else completion(@[@(-1), @(remain)]);
+            else completion(@[@{@"code": @(-1), @"remain": @(remain)}]);
         }
     }
 }
@@ -250,14 +250,14 @@ RCT_EXPORT_MODULE()
             if (msg.length == 0) {
                 msg = error.localizedDescription;
             }
-            completion(@[@(error.code), @(remain), @[]]);
+            completion(@[@{@"code": @(error.code), @"msg": msg}]);
         }
         else {
             if ([responseTags isKindOfClass:[NSSet class]]) {
                 NSArray *retList = responseTags.allObjects;
-                completion(@[@200, @(remain), retList]);
+                completion(@[@{@"code": @(200), @"remain": @(remain), @"data": retList}]);
             }
-            else completion(@[@(-1), @(remain), @[]]);
+            else completion(@[@{@"code": @(-1), @"remain": @(remain)}]);
         }
     }
 }
@@ -269,29 +269,29 @@ RCT_EXPORT_MODULE()
             if (msg.length == 0) {
                 msg = error.localizedDescription;
             }
-            completion(@[@(error.code)]);
+            completion(@[@{@"code": @(error.code), @"msg": msg}]);
         }
         else {
             if ([responseObject isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *retDict = responseObject;
                 if ([retDict[@"success"] isEqualToString:@"ok"]) {
-                    completion(@[@200]);
+                    completion(@[@{@"code": @(200)}]);
                 }
-                else completion(@[@(-1)]);
+                else completion(@[@{@"code": @(-1)}]);
                 
             }
-            else completion(@[@(-1)]);
+            else completion(@[@{@"code": @(-1)}]);
         }
     }
 }
 
 #pragma mark - RN method
 
-RCT_EXPORT_METHOD(receiveRemoteNotification:(RCTPromiseResolveBlock)completion) {
+RCT_EXPORT_METHOD(receiveRemoteNotification:(RCTResponseSenderBlock)completion) {
     self.receiveRemoteMessageBlock = completion;
 }
 
-RCT_EXPORT_METHOD(openRemoteNotification:(RCTPromiseResolveBlock)completion) {
+RCT_EXPORT_METHOD(openRemoteNotification:(RCTResponseSenderBlock)completion) {
     self.openRemoteMessageBlock = completion;
 }
 
@@ -332,3 +332,4 @@ RCT_EXPORT_METHOD(deleteAlias:(NSString *)name type:(NSString *)type response:(R
 }
 
 @end
+
