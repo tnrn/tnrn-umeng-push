@@ -41,6 +41,7 @@
   [RNUmengPush didRegisterDeviceToken:deviceToken];
 }
 
+// iOS10 以下
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
   [RNUmengPush didReceiveRemoteNotification:userInfo applicationState:application.applicationState];
   completionHandler(UIBackgroundFetchResultNewData);

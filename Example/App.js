@@ -8,33 +8,65 @@
  */
 
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, Button } from 'react-native';
+import { Platform, StyleSheet, Text, View, Button, Alert } from 'react-native';
 import UMPush from 'tnrn-umeng-push';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
 export default class App extends Component {
 
-  addTag = () => {
-    UMPush.addTag('test', (result) => {
-      console.log('******************** = ', result)
+  componentDidMount() {
+    UMPush.receiveNotification(result => {
+      console.log('receiveNotification = ', result)
+      this.alert('receiveMsg', JSON.stringify(result))
     })
+
+    UMPush.openNotification(result => {
+      console.log('openNotification = ', result)
+      this.alert('openMsg', JSON.stringify(result))
+    })
+  }
+
+  getDeviceToken = () => {
+    UMPush.getDeviceToken(result => {
+      console.log('deviceToken = ', result)
+      this.alert('deviceToken', result)
+    })
+  }
+
+  getAuthorizationStatus = () => {
+    UMPush.getAuthorizationStatus(result => {
+      console.log('getAuthorizationStatus = ', result)
+      this.alert('status', result)
+    })
+  }
+
+  addAlias = () => {
+    UMPush.addAlias('test', (result) => {
+      console.log('addAliais = ', result)
+      this.alert('addAlias', JSON.stringify(result))
+    })
+  }
+
+  alert = (title = 'title', msg = 'msg') => {
+    Alert.alert(title, msg,
+      [{ text: 'OK' }]
+    )
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Text style={styles.welcome}>友盟消息推送Demo!</Text>
         <Button
-          title='UMPush Action'
-          onPress={this.addTag}
+          title='UMPush addAlias'
+          onPress={this.addAlias}
+        />
+        <Button
+          title='UMPush getDeviceToken'
+          onPress={this.getDeviceToken}
+        />
+        <Button
+          title='UMPush getAuthorizationStatus'
+          onPress={this.getAuthorizationStatus}
         />
       </View>
     );
