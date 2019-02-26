@@ -7,20 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UserNotifications/UserNotifications.h>
+#import <UIKit/UIApplication.h>
 
 #if __has_include(<React/RCTBridgeModule.h>)
 #import <React/RCTBridgeModule.h>
-#import <React/RCTEventEmitter.h>
 #elif __has_include("RCTBridgeModule.h")
 #import "RCTBridgeModule.h"
-#import "RCTEventEmitter.h"
 #elif __has_include("React/RCTBridgeModule.h")
 #import "React/RCTBridgeModule.h"
-#import "React/RCTEventEmitter.h"
 #endif
 
-@interface RNUmengPush : RCTEventEmitter <RCTBridgeModule>
+@interface RNUmengPush : NSObject <RCTBridgeModule>
 /** 初始化友盟所有组件产品
  @param appkey 开发者在友盟官网申请的appkey.
  @param launchOptions didFinishLaunchingWithOptions:launchOptions
@@ -29,4 +26,3 @@
 + (void)didRegisterDeviceToken:(NSData *)deviceToken;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo applicationState:(UIApplicationState)state;
 @end
-

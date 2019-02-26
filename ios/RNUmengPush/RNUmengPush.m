@@ -10,10 +10,17 @@
 #import <UMPush/UMessage.h>
 #import <UMCommon/UMCommon.h>
 
+#if __has_include(<React/RCTBridge.h>)
+#import <React/RCTBridge.h>
+#elif __has_include("RCTBridge.h")
+#import "RCTBridge.h"
+#elif __has_include("React/RCTBridge.h")
+#import "React/RCTBridge.h"
+#endif
+
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
-static NSString * const DidReceiveRemoteMessage = @"RNUmengPushDidReceiveRemoteMessage";
-static NSString * const DidOpenRemoteMessage = @"RNUmengPushDidOpenRemoteMessage";
+static RNUmengPush *_instance = nil;
 
 @interface RNUmengPush ()<UNUserNotificationCenterDelegate>
 @property (nonatomic, copy) NSString *deviceToken;
@@ -22,14 +29,26 @@ static NSString * const DidOpenRemoteMessage = @"RNUmengPushDidOpenRemoteMessage
 @end
 
 @implementation RNUmengPush
-RCT_EXPORT_MODULE()
 
-+ (instancetype)sharedInstance {
-    static RNUmengPush *_instance = nil;
+RCT_EXPORT_MODULE();
+
+@synthesize bridge = _bridge;
+
++ (instancetype)shareInstance {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if(_instance == nil) {
             _instance = [[self alloc] init];
+        }
+    });
+    return _instance;
+}
+
++ (instancetype)allocWithZone:(struct _NSZone *)zone {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if(_instance == nil) {
+            _instance = [super allocWithZone:zone];
         }
     });
     return _instance;
@@ -48,65 +67,91 @@ RCT_EXPORT_MODULE()
     return [RNUmengPush sharedMethodQueue];
 }
 
-- (NSArray<NSString *> *)supportedEvents {
-    return @[DidReceiveRemoteMessage, DidOpenRemoteMessage];
+#pragma mark - private method
+
+// 等待RN模块加载完成
++ (void)waitLoaded:(void (^)(void))block {
+    if (block == nil) {
+        return;
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), [self sharedMethodQueue], ^{
+        // 当前模块是否有效
+        if ([RNUmengPush shareInstance].bridge.isValid) block();
+        else [self waitLoaded:block];
+    });
 }
 
-#pragma mark - private method
+- (void)waitLoaded:(void (^)(void))block {
+    [RNUmengPush waitLoaded:block];
+}
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)noti {
     if (self.receiveRemoteMessageBlock) {
         self.receiveRemoteMessageBlock(@[noti]);
     }
-    else [self sendEventWithName:DidReceiveRemoteMessage body:noti];
 }
 
 - (void)didOpenRemoteNotification:(NSDictionary *)noti {
-    if (self.openRemoteMessageBlock) {
-        self.openRemoteMessageBlock(@[noti]);
+    // 如果APP没有打开，需要等待RN模块加载完成
+    [self waitLoaded:^{
+        if (self.openRemoteMessageBlock) {
+            self.openRemoteMessageBlock(@[noti]);
+        }
+    }];
+}
+
+- (void)getUserNoticationSetting:(RCTResponseSenderBlock)completion {
+    // iOS10以后
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10")) {
+        [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+            NSArray *status = @[@"NotDetermined", @"Denied", @"Authorized", @"Provisional"];
+            completion(@[status[settings.authorizationStatus]]);
+        }];
     }
-    else [self sendEventWithName:DidOpenRemoteMessage body:noti];
+    else {
+        completion(@[@"unkown"]);
+    }
 }
 
 + (void)setupPushWithLaunchOptions:(NSDictionary *)launchOptions {
     UMessageRegisterEntity *entity = [[UMessageRegisterEntity alloc] init];
     // 声音，弹窗，角标
     entity.types = UMessageAuthorizationOptionBadge|UMessageAuthorizationOptionSound|UMessageAuthorizationOptionAlert;
-    
+
     // iOS10以后
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10")) {
-        UNNotificationAction *action1 = [UNNotificationAction actionWithIdentifier:@"action1_ios10_identifier" title:@"打开" options:UNNotificationActionOptionForeground];
-        UNNotificationAction *action2 = [UNNotificationAction actionWithIdentifier:@"action2_ios10_identifier" title:@"忽略" options:UNNotificationActionOptionForeground];
-        
+        UNNotificationAction *action1 = [UNNotificationAction actionWithIdentifier:@"open_identifier" title:@"打开" options:UNNotificationActionOptionForeground];
+        UNNotificationAction *action2 = [UNNotificationAction actionWithIdentifier:@"cancel_identifier" title:@"忽略" options:UNNotificationActionOptionForeground];
+
         //UNNotificationCategoryOptionNone
         //UNNotificationCategoryOptionCustomDismissAction  清除通知被触发会走通知的代理方法
         //UNNotificationCategoryOptionAllowInCarPlay       适用于行车模式
-        UNNotificationCategory *notiCategory_ios10 = [UNNotificationCategory categoryWithIdentifier:@"notiCategory_ios10"
+        UNNotificationCategory *notiCategory = [UNNotificationCategory categoryWithIdentifier:@"notiCategory"
                                                                                             actions:@[action1, action2]
                                                                                   intentIdentifiers:@[]
                                                                                             options:UNNotificationCategoryOptionCustomDismissAction];
-        entity.categories = [NSSet setWithObjects:notiCategory_ios10, nil];
+        entity.categories = [NSSet setWithObjects:notiCategory, nil];
     }
     else {
         UIMutableUserNotificationAction *action1 = [[UIMutableUserNotificationAction alloc] init];
-        action1.identifier = @"action1_ios8_identifier";
+        action1.identifier = @"open_identifier";
         action1.title = @"打开";
         action1.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
-        
+
         UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];  //第二按钮
-        action2.identifier = @"action2_ios8_identifier";
+        action2.identifier = @"cancel_identifier";
         action2.title = @"忽略";
         action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
         action2.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
         action2.destructive = YES;
-        
-        UIMutableUserNotificationCategory *notiCategory_ios8 = [[UIMutableUserNotificationCategory alloc] init];
-        notiCategory_ios8.identifier = @"notiCategory_ios8";
-        [notiCategory_ios8 setActions:@[action1, action2] forContext:(UIUserNotificationActionContextDefault)];
-        
-        entity.categories = [NSSet setWithObjects:notiCategory_ios8, nil];
+
+        UIMutableUserNotificationCategory *notiCategory = [[UIMutableUserNotificationCategory alloc] init];
+        notiCategory.identifier = @"notiCategory";
+        [notiCategory setActions:@[action1, action2] forContext:(UIUserNotificationActionContextDefault)];
+
+        entity.categories = [NSSet setWithObjects:notiCategory, nil];
     }
-    
+
     [UMessage registerForRemoteNotificationsWithLaunchOptions:launchOptions Entity:entity completionHandler:^(BOOL granted, NSError * _Nullable error) {
         // iOS10以后 回调
         if (!granted) {
@@ -116,22 +161,15 @@ RCT_EXPORT_MODULE()
 }
 
 + (void)didReceiveRemoteNotificationWhenFirstLaunchApp:(NSDictionary *)noti {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), [self sharedMethodQueue], ^{
-        // 当前模块是否正在加载
-        if ([RNUmengPush sharedInstance].bridge.isLoading) {
-            [UMessage didReceiveRemoteNotification:noti];
-            [[RNUmengPush sharedInstance] didOpenRemoteNotification:noti];
-        }
-        else {
-            [self didReceiveRemoteNotificationWhenFirstLaunchApp:noti];
-        }
-    });
+    [UMessage didReceiveRemoteNotification:noti];
+    [[RNUmengPush shareInstance] didOpenRemoteNotification:noti];
 }
 
 #pragma mark - pulic method
 
 + (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions {
 #ifdef DEBUG
+    //开发者需要显式的调用此函数，日志系统才能工作
     [UMConfigure setLogEnabled:YES];
 #endif
     [UMConfigure initWithAppkey:appkey channel:nil];
@@ -139,11 +177,16 @@ RCT_EXPORT_MODULE()
     [UMessage setAutoAlert:NO];
     
     [self setupPushWithLaunchOptions:launchOptions];
-    [UNUserNotificationCenter currentNotificationCenter].delegate = [self sharedInstance];
-    // 由推送第一次打开app
-    NSDictionary *noti = launchOptions[@"UIApplicationLaunchOptionsRemoteNotificationKey"];
-    if (noti) {
-        [self didReceiveRemoteNotificationWhenFirstLaunchApp:noti];
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10")) {
+        [UNUserNotificationCenter currentNotificationCenter].delegate = [self shareInstance];
+    }
+    else {
+        // 由推送第一次打开app
+        NSDictionary *noti = launchOptions[@"UIApplicationLaunchOptionsRemoteNotificationKey"];
+        if (noti) {
+            [self didReceiveRemoteNotificationWhenFirstLaunchApp:noti];
+        }
     }
 }
 
@@ -152,20 +195,20 @@ RCT_EXPORT_MODULE()
     tokenString = [tokenString stringByReplacingOccurrencesOfString:@"<" withString:@""];
     tokenString = [tokenString stringByReplacingOccurrencesOfString:@">" withString:@""];
     tokenString = [tokenString stringByReplacingOccurrencesOfString:@" " withString:@""];
-    [RNUmengPush sharedInstance].deviceToken = tokenString;
+    [RNUmengPush shareInstance].deviceToken = tokenString;
     
     [UMessage registerDeviceToken:deviceToken];
 }
 
+// iOS10 以下
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo applicationState:(UIApplicationState)state  {
     [UMessage didReceiveRemoteNotification:userInfo];
-    
     // send event
     if (state == UIApplicationStateInactive) {
-        [[RNUmengPush sharedInstance] didOpenRemoteNotification:userInfo];
+        [[RNUmengPush shareInstance] didOpenRemoteNotification:userInfo];
     }
     else {
-        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
+        [[RNUmengPush shareInstance] didReceiveRemoteNotification:userInfo];
     }
 }
 
@@ -173,26 +216,28 @@ RCT_EXPORT_MODULE()
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
     if ([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-        // APP在前台的远程通知
+        // 远程通知
         NSDictionary *userInfo = notification.request.content.userInfo;
-        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
+        [self didReceiveRemoteNotification:userInfo];
     }
     else {
         // 前台的本地通知
     }
     // app处于前台时提示设置
-    completionHandler(UNNotificationPresentationOptionNone);
+    completionHandler(UNNotificationPresentationOptionSound);
 }
 
+// 点击消息触发
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
     if ([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-        // APP在前台的远程通知
+        // 远程通知
         NSDictionary *userInfo = response.notification.request.content.userInfo;
-        [[RNUmengPush sharedInstance] didReceiveRemoteNotification:userInfo];
+        [self didOpenRemoteNotification:userInfo];
     }
     else {
         // 前台的本地通知
     }
+    completionHandler();
 }
 
 #pragma mark - native handle js method
@@ -295,6 +340,18 @@ RCT_EXPORT_METHOD(openRemoteNotification:(RCTResponseSenderBlock)completion) {
     self.openRemoteMessageBlock = completion;
 }
 
+RCT_EXPORT_METHOD(getDeviceToken:(RCTResponseSenderBlock)completion) {
+    NSString *deviceToken = self.deviceToken;
+    if(deviceToken == nil) {
+        deviceToken = @"";
+    }
+    completion(@[deviceToken]);
+}
+
+RCT_EXPORT_METHOD(getAuthorizationStatus:(RCTResponseSenderBlock)completion) {
+    [self getUserNoticationSetting:completion];
+}
+
 RCT_EXPORT_METHOD(addTag:(NSString *)tag response:(RCTResponseSenderBlock)completion) {
     [UMessage addTags:tag response:^(id responseObject, NSInteger remain, NSError *error) {
         [self handleResponse:responseObject remain:remain error:error completion:completion];
@@ -332,4 +389,3 @@ RCT_EXPORT_METHOD(deleteAlias:(NSString *)name type:(NSString *)type response:(R
 }
 
 @end
-
