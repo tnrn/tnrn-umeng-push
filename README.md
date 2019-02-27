@@ -83,10 +83,64 @@ Have fun! :metal:
 
 ## Basic Usage
 
-Import library
+Use in AppDelegate.m for iOS
 
 ```
-import RNUMPush from 'tnrn-umeng-push'
+
+#import <RNUmengPush/RNUmengPush.h>
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  ...
+
+  [RNUmengPush registerWithAppkey:UmengAppKey launchOptions:launchOptions];
+
+  ...
+}
+
+#pragma mark - push
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  [RNUmengPush didRegisterDeviceToken:deviceToken];
+}
+
+// iOS10 以下
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+  [RNUmengPush didReceiveRemoteNotification:userInfo applicationState:application.applicationState];
+  completionHandler(UIBackgroundFetchResultNewData);
+}
+
+```
+
+
+Use library in *.js
+
+```
+import UMPush from 'tnrn-umeng-push'
+
+...
+
+UMPush.receiveNotification(result => {
+  console.log('receiveNotification = ', result)
+})
+
+UMPush.openNotification(result => {
+  console.log('openNotification = ', result)
+})
+
+UMPush.getDeviceToken(result => {
+	console.log('deviceToken = ', result)
+})
+
+// only support iOS
+UMPush.getAuthorizationStatus(result => {
+	console.log('getAuthorizationStatus = ', result)
+})
+    
+UMPush.addAlias('test', (result) => {
+  console.log('addAliais = ', result)
+}) 
+
+...    
 ```
 
 
