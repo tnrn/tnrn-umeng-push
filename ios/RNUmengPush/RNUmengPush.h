@@ -23,6 +23,7 @@
  @param launchOptions didFinishLaunchingWithOptions:launchOptions
  */
 + (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions;
++ (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions channel:(NSString *)channel;
 + (void)didRegisterDeviceToken:(NSData *)deviceToken;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo applicationState:(UIApplicationState)state;
 @end

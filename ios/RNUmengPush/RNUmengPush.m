@@ -168,11 +168,15 @@ RCT_EXPORT_MODULE();
 #pragma mark - pulic method
 
 + (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions {
+    [self registerWithAppkey:appkey launchOptions:launchOptions channel:nil];
+}
+
++ (void)registerWithAppkey:(NSString *)appkey launchOptions:(NSDictionary *)launchOptions channel:(NSString *)channel {
 #ifdef DEBUG
     //开发者需要显式的调用此函数，日志系统才能工作
     [UMConfigure setLogEnabled:YES];
 #endif
-    [UMConfigure initWithAppkey:appkey channel:nil];
+    [UMConfigure initWithAppkey:appkey channel:channel];
     // 设置APP运行时，收到通知不弹窗
     [UMessage setAutoAlert:NO];
     
