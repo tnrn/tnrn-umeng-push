@@ -24,6 +24,14 @@
         <!--<meta-data-->
             <!--android:name="com.huawei.hms.client.appid"-->
             <!--android:value="appid=xxxxxx" />-->
+        <meta-data
+            android:name="com.huawei.hms.client.appid"
+            android:value="appid=10277492" />
+
+        <!--<activity android:name=".NotifyActivity"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:exported="true"/>-->
+
         <service
             android:name="com.taobao.accs.ChannelService"
             android:exported="true"
@@ -133,10 +141,6 @@
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
             android:exported="false" />
-
-        <service
-            android:name="com.tnrn.UMPush.YouMengPushIntentService"
-            android:process=":push" />
 
         <service
             android:name="com.umeng.message.UmengMessageCallbackHandlerService"

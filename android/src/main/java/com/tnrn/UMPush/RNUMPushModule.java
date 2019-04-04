@@ -51,6 +51,7 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
 
 
     public static void onMessageOutLine(String msg) { // 厂商推送消息
+        Log.e("avery_zjz outline", msg+"");
         if (null == mMessageQueue) {
             mMessageQueue = new ArrayList<String>();
         }
@@ -69,17 +70,22 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
             public void run() {
                 super.run();
                 while(reactContext.getLifecycleState().toString() != "RESUMED") { // app 没加载完成 等待
+                    Log.e("avery_zjz thread", reactContext.getLifecycleState().toString());
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                for (String uMsg: mMessageQueue) {
-                    sendMessage2Js("clickMsgOutLine", mMessageQueue);
+                if (mMessageQueue != null) {
+                    for (String uMsg: mMessageQueue) {
+                        Log.e("avery_zjz sendMSG", reactContext.getLifecycleState().toString());
+                        sendMessage2Js("clickMsgOutLine", uMsg);
+                    }
                 }
             }
         };
+        thread.start();
     }
 
     /**

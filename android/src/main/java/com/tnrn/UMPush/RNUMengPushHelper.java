@@ -1,5 +1,6 @@
 package com.tnrn.UMPush;
 
+import android.app.Application;
 import android.app.Notification;
 import android.content.Context;
 import android.os.Handler;
@@ -16,6 +17,9 @@ import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
+
+import org.android.agoo.huawei.HuaWeiRegister;
+import org.android.agoo.xiaomi.MiPushRegistar;
 
 /**
  * Created by zhangjz on 2019/3/11.
@@ -55,6 +59,10 @@ public class RNUMengPushHelper {
 
 
     public static void initUpush(Context context) {
+        RNUMConfigure.init(context, "5533553067e58e1e64000d9b", "", 0, "b71531b85b8ffd664dcbaeaa416bab4c");
+        MiPushRegistar.register(context, "2882303761517334391", "5221733465391");
+        HuaWeiRegister.register((Application) context);
+
         PushAgent mPushAgent = PushAgent.getInstance(context);
         handler = new Handler(context.getMainLooper());
 
