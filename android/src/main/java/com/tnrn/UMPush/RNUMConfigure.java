@@ -10,6 +10,7 @@ import com.umeng.commonsdk.UMConfigure;
 
 /**
  * Created by wangfei on 17/9/14.
+ * @description 初始化RN所用
  */
 
 public class RNUMConfigure {

@@ -47,7 +47,7 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
     private DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter;
     private String mAppState;
 
-    private static ArrayList<String> mMessageQueue;
+    private static ArrayList<String> mMessageQueue; // 存储app离线收到的推送消息
 
 
     public static void onMessageOutLine(String msg) { // 厂商推送消息
@@ -65,6 +65,7 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
         RNUMengPushHelper.setClickCallBack(this);
         RNUMengPushHelper.setMsgCallBack(this);
 
+        // 新建线程，通过循环等待RN加载完毕， 加载完毕后将离线收到的消息推送到js层
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -80,7 +81,7 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
                 if (mMessageQueue != null) {
                     for (String uMsg: mMessageQueue) {
                         Log.e("avery_zjz sendMSG", reactContext.getLifecycleState().toString());
-                        sendMessage2Js("clickMsgOutLine", uMsg);
+                        sendMessage2Js("appDidOpenRemoteNotification", uMsg);
                     }
                 }
             }
@@ -120,16 +121,6 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
 //    @ReactMethod
 //    public void getAuthorizationStatus(Callback callback) { // 获取push 权限
 //        mPushPermissionCallBack = callback;
-//    }
-//
-//    @ReactMethod
-//    public void receiveNotification(Callback callback) { // 收到推送消息
-//        mPushMessageCallBack = callback;
-//    }
-//
-//    @ReactMethod
-//    public void openNotification(Callback callback) { // 点击推送 打开app
-//        mPushClickCallBack = callback;
 //    }
 
     @ReactMethod
@@ -278,6 +269,9 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
         return list;
     }
 
+    /**
+     * 处理消息的回调
+     * */
     @Override
     public void onCallBack(int type, UMessage msg) {
         String eventName = "";
@@ -285,10 +279,10 @@ public class RNUMPushModule extends ReactContextBaseJavaModule implements PushEv
         String msgJson = gson.toJson(msg);
         switch (type) {
             case 0: // 收到消息的回调
-                eventName = "receiveMsg";
+                eventName = "appDidReceiveRemoteNotification";
                 break;
             case 1: // 点击通知的回调
-                eventName = "clickMsg";
+                eventName = "appDidOpenRemoteNotification";
                 break;
         }
         sendMessage2Js(eventName, msgJson);

@@ -5,6 +5,6 @@ package com.tnrn.UMPush;
  */
 
 public class EventConstant {
-    public static final int RECEIVE_MSG = 0;
-    public static final int CLICK_MSG = 1;
+    public static final int RECEIVE_MSG = 0; // 收到消息
+    public static final int CLICK_MSG = 1; // 点击消息
 }
